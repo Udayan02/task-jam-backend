@@ -19,6 +19,7 @@ db = firestore.client()
 
 # Data with auto-IDs
 data = {"task": "Drink too much alcohol"}
+# db.collection("todos").add({"id": 3, "todo": "Brush your teeth"})
 
 # Data with manually set IDs. For this, we use .set() instead of .add()
 data2 = {"task": "Fuck a lot, moan even more"}
@@ -42,15 +43,19 @@ ref = db.collection("users").get()
 ref_matches = db.collection("matches").get()
 # print(ref[0])
 
+db.collection("todos").document("1").update({"task":  "Brush"})
+
 for user in ref:
     user_dict = user.to_dict()
-
-    db.collection("matches").document(user_dict["uid"]).set(
-        {"currentlyMatched": False, "match": ""})
+    user_id = user_dict["uid"]
+    # In the future, include daily and weekly points
+    db.collection("users").document(user_id).update({"total_points": 0})
+    db.collection("matches").document(user_id).set(
+        {"currentlyMatched": False, "match": "", "uid": user_id})
 
 
 def getNonMatchedUsers(non_matched):
-    doc = db.collection("matches").where("matchedRandom", "==", False).get()
+    doc = db.collection("matches").where("currentlyMatched", "==", False).get()
     for i in doc:
         non_matched.append(i.to_dict())
 
@@ -67,10 +72,19 @@ def getNonMatchedUsers(non_matched):
 #     print(match_user)
 
 
-def randomize(ref, )
+def randomize(db):
+    non_matched = list()
+    getNonMatchedUsers(non_matched)
+    index1, index2 = random.sample(range(len(non_matched)), 2)
+    db.collection("matches").document(non_matched[index1]["uid"]).set(
+        {"currentlyMatched": True, "match": non_matched[index2]["uid"], "uid": non_matched[index1]["uid"]})
+    db.collection("matches").document(non_matched[index2]["uid"]).set(
+        {"currentlyMatched": True, "match": non_matched[index1]["uid"], "uid": non_matched[index2]["uid"]})
 
 
-randomize(ref, 'BkwKXOTW8bgpIU6UVzyzsGKIO492', ref_matches)
+# randomize(db)
+for i in range(len(ref) // 2):
+    randomize(db)
 
 app = FastAPI(description="This is a backend server for our DubHacks project.",
               title="DubHacks23Project")
@@ -123,10 +137,6 @@ app = FastAPI(description="This is a backend server for our DubHacks project.",
 #             return {"message": "Todo successfully removed! Good job!"}
 #     return {"message": "No Todos to delete :("}
 
-# DELETE ALL Todo's:
-def delete_all_docs():
-    for todo in db.collection("todos").list_documents():
-        todo.delete()
 
 # # UPDATE A Todo:
 # # Put updates whole objects, and Patch updates parts of an object
