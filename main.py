@@ -1,3 +1,5 @@
+import random
+
 # FastAPI is a Python class that provides all the functionality for your API.
 from fastapi import FastAPI
 from models import Todo
@@ -38,9 +40,21 @@ db.collection("todos").document("1").set(
 
 user_array = list()
 ref = db.collection("users").get()
+ref_matches = db.collection("matches").get()
+print(ref[0])
 
-for u in ref:
-    print(u.to_dict()["friends"])
+for user in ref:
+    user_dict = user.to_dict()
+
+    db.collection("matches").document(user_dict["uid"]).set(
+        {"matchedRandom": False, "match": ""})
+
+
+def randomize(ref):
+    index = random.randint(len(ref))
+    print(ref_matches.document(randomize[index].to_dict()["uid"]))
+# for i in range(len(ref)):
+
 
 app = FastAPI(description="This is a backend server for our DubHacks project.",
               title="DubHacks23Project")
