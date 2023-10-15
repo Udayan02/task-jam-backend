@@ -1,0 +1,4 @@
+for user in ref:
+    user_data = user.to_dict()
+    user_id = user_data["uid"]
+    db.collection("leaderboard").document(user_id).set({"Points": user_data["total_points"]})
