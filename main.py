@@ -41,95 +41,112 @@ db.collection("todos").document("1").set(
 user_array = list()
 ref = db.collection("users").get()
 ref_matches = db.collection("matches").get()
-print(ref[0])
+# print(ref[0])
 
 for user in ref:
     user_dict = user.to_dict()
 
     db.collection("matches").document(user_dict["uid"]).set(
-        {"matchedRandom": False, "match": ""})
+        {"currentlyMatched": False, "match": ""})
 
 
-def randomize(ref):
-    index = random.randint(len(ref))
-    print(ref_matches.document(randomize[index].to_dict()["uid"]))
-# for i in range(len(ref)):
+def getNonMatchedUsers(non_matched):
+    doc = db.collection("matches").where("matchedRandom", "==", False).get()
+    for i in doc:
+        non_matched.append(i.to_dict())
 
+# def randomize(ref, uid, ref_matches, ):
+#     index = random.randint(0, len(ref) - 1)
+#     # print(db.collection("matches").to_).document(
+#     #     ref[index]).to_dict()["uid"] + "yo")
+#     match_user = ref_matches[index].to_dict()
+#     # Ignoring the fact that it can be the same user
+#     if not match_user["matchedRandom"]:
+#         match_user["match"] = uid
+#         match_user["matchedRandom"] = True
+#         print("Task Done")
+#     print(match_user)
+
+
+def randomize(ref, )
+
+
+randomize(ref, 'BkwKXOTW8bgpIU6UVzyzsGKIO492', ref_matches)
 
 app = FastAPI(description="This is a backend server for our DubHacks project.",
               title="DubHacks23Project")
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+# @app.get("/")
+# async def root():
+#     return {"message": "Hello World"}
 
-# Storing todos as a list, instead of a database rn:
-todos = list()
+# # Storing todos as a list, instead of a database rn:
+# todos = list()
 
-# GET ALL TODOS:
-
-
-@app.get("/todos")
-async def get_all_todos():
-    return {"todos": todos}
+# # GET ALL TODOS:
 
 
-# GET A SINGLE Todo
-# We can get a single todo by passing its id as a parameter
-# Read "Path Parameters" on FastAPI Documentation
-@app.get("/todos/{todo_id}")
-# If we don't declare the type as an int, Python would assume
-async def get_todo(todo_id: int):
-    # it to be a string.
-    for todo in todos:
-        if todo.id == todo_id:  # todo.id because todo is an object of class Todo which has a field id
-            return {"todo": todo}
-    return {"message": "No Todos found :("}
+# @app.get("/todos")
+# async def get_all_todos():
+#     return {"todos": todos}
 
 
-# CREATE A Todo:
-@app.post("/todos")
-# The todo item now has to follow the Data model outlined in the Todo class.
-async def create_todo(todo: Todo):
-    # Basically, todo is an object of type Todo, like int and str
-    # MODIFY WHEN USING DATABASE. FOR EXAMPLE: database.write()
-    todos.append(todo)
-    return {"message": "Todo successfully added"}
+# # GET A SINGLE Todo
+# # We can get a single todo by passing its id as a parameter
+# # Read "Path Parameters" on FastAPI Documentation
+# @app.get("/todos/{todo_id}")
+# # If we don't declare the type as an int, Python would assume
+# async def get_todo(todo_id: int):
+#     # it to be a string.
+#     for todo in todos:
+#         if todo.id == todo_id:  # todo.id because todo is an object of class Todo which has a field id
+#             return {"todo": todo}
+#     return {"message": "No Todos found :("}
 
 
-# DELETE A Todo:
-@app.delete("/todos/{todo_id}")
-async def delete_todo(todo_id: int):
-    for todo in todos:
-        if todo.id == todo_id:
-            todos.remove(todo)
-            return {"message": "Todo successfully removed! Good job!"}
-    return {"message": "No Todos to delete :("}
+# # CREATE A Todo:
+# @app.post("/todos")
+# # The todo item now has to follow the Data model outlined in the Todo class.
+# async def create_todo(todo: Todo):
+#     # Basically, todo is an object of type Todo, like int and str
+#     # MODIFY WHEN USING DATABASE. FOR EXAMPLE: database.write()
+#     todos.append(todo)
+#     return {"message": "Todo successfully added"}
 
 
-# UPDATE A Todo:
-# Put updates whole objects, and Patch updates parts of an object
-# Since we're only dealing with two fields, id and item, we can use Put.
-@app.put("/todos/{todo_id}")
-async def update_todo(todo_id: int, new_todo: Todo):
-    # todo_id is the id of the todo to update;
-    # new_todo is the new todo that we want to replace the old one with
-    for todo in todos:
-        if todo.id == todo_id:
-            todo.id = todo_id
-            # new_todo is still an object of type Todo, we need to specify we're changing
-            todo.item = new_todo.item
-            # only its item field.
-            return {"todo": todo}
-    return {"message": "Oops, no such todo found"}
+# # DELETE A Todo:
+# @app.delete("/todos/{todo_id}")
+# async def delete_todo(todo_id: int):
+#     for todo in todos:
+#         if todo.id == todo_id:
+#             todos.remove(todo)
+#             return {"message": "Todo successfully removed! Good job!"}
+#     return {"message": "No Todos to delete :("}
 
 
-@app.post("/login")
-async def create_access_token():
-    pass
+# # UPDATE A Todo:
+# # Put updates whole objects, and Patch updates parts of an object
+# # Since we're only dealing with two fields, id and item, we can use Put.
+# @app.put("/todos/{todo_id}")
+# async def update_todo(todo_id: int, new_todo: Todo):
+#     # todo_id is the id of the todo to update;
+#     # new_todo is the new todo that we want to replace the old one with
+#     for todo in todos:
+#         if todo.id == todo_id:
+#             todo.id = todo_id
+#             # new_todo is still an object of type Todo, we need to specify we're changing
+#             todo.item = new_todo.item
+#             # only its item field.
+#             return {"todo": todo}
+#     return {"message": "Oops, no such todo found"}
 
 
-@app.post("/ping")  # Validating
-async def validate_token():
-    pass
+# @app.post("/login")
+# async def create_access_token():
+#     pass
+
+
+# @app.post("/ping")  # Validating
+# async def validate_token():
+#     pass
