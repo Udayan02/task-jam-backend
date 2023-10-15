@@ -19,7 +19,6 @@ db = firestore.client()
 
 # Data with auto-IDs
 data = {"task": "Drink too much alcohol"}
-db.collection("todos").add({"id": 3, "todo": "Brush your teeth"})
 
 # Data with manually set IDs. For this, we use .set() instead of .add()
 data2 = {"task": "Fuck a lot, moan even more"}
@@ -107,6 +106,10 @@ async def delete_todo(todo_id: int):
             return {"message": "Todo successfully removed! Good job!"}
     return {"message": "No Todos to delete :("}
 
+# DELETE ALL Todo's:
+def delete_all_docs():
+    for todo in db.collection("todos").list_documents():
+        todo.delete()
 
 # UPDATE A Todo:
 # Put updates whole objects, and Patch updates parts of an object
